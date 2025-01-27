@@ -24,12 +24,7 @@
     </section>
     <!-- Breadcrumb End -->
 
-    <!-- Authentication Check: If user is not logged in, show message -->
-    @if(!auth()->check())
-        <div class="alert alert-warning text-center">
-            You must be logged in to access this page.
-        </div>
-    @endif
+    
 
     @if(!$loanDetails)
         <div class="alert alert-warning text-center">
@@ -152,12 +147,17 @@
                                 <div class="col-md-12">
                                     <label class="label" for="image">Upload Profile Picture</label>
                                 
-                                    @if(auth()->user()->image)
-                                        <div class="mb-3">
-                                            <label>Current Profile Picture:</label>
-                                            <img src="{{ asset('images/' . auth()->user()->image) }}" alt="Profile Image" style="max-width: 150px; height: auto;">
-                                        </div>
-                                    @endif
+                                    @if(auth()->check())
+    @if(auth()->user()->image)
+        <div class="mb-3">
+            <label>Current Profile Picture:</label>
+            <img src="{{ asset('images/' . auth()->user()->image) }}" alt="Profile Image" style="max-width: 150px; height: auto;">
+        </div>
+    @endif
+@else
+    <p>You are not logged in.</p>
+@endif
+
                                 
                                     <input id="image" class="form-control" type="file" name="image" accept="image/*">
                                 </div>

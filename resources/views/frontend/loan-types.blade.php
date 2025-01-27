@@ -73,7 +73,7 @@
                         <div class="feature-card-widget-8 saas-feature-card loan-type-card text-center">
                             <div class="card-img mb-3">
                                 <!-- Replace with a loan type icon or default placeholder -->
-                                <img src="{{ asset('img/loan-icons/default-icon.svg') }}" alt="{{ $loanType->name }}" class="img-fluid">
+                                {{-- <img src="{{ asset('img/loan-icons/default-icon.svg') }}" alt="{{ $loanType->name }}" class="img-fluid"> --}}
                             </div>
                             <h4 class="card-title">{{ $loanType->name }}</h4>
                             <p class="card-description">{{ $loanType->description }}</p>

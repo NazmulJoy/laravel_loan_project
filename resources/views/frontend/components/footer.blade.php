@@ -96,7 +96,7 @@ style="background-image: url({{ asset('assetsfront/img/footer/footer-bg-2.png') 
                 </div>
                 <div class="row">
                     <div class="copyright-text text-md-start text-center">
-                        <p>Copyright&copy; Banca 2023.<br class="d-sm-none"> <a class="ms-3"
+                        <p>Copyright&copy; NazmulJoy 2024.<br class="d-sm-none"> <a class="ms-3"
                                 href="#">Privecy</a> | <a class="ms-0" href="#">Term
                                 of Use</a> </p>
                     </div>
