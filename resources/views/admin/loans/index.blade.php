@@ -320,15 +320,19 @@
         });
     });
 
-       var deleteModal = document.getElementById('deleteModal');
-deleteModal.addEventListener('show.bs.modal', function (event) {
-    var button = event.relatedTarget;  
-    var loanId = button.getAttribute('data-id');  
-    
-    
-    var deleteForm = document.getElementById('deleteForm');
-    deleteForm.action = '/laravel_loan/admin/loans/' + loanId;  
+    document.addEventListener('DOMContentLoaded', function () {
+    const deleteModal = document.getElementById('deleteModal');
+
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; 
+        const loanId = button.getAttribute('data-id'); 
+
+       
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = `/admin/loans/${loanId}`;
+    });
 });
+
 
 
        function filterStatus() {

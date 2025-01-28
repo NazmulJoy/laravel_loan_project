@@ -175,10 +175,18 @@ public function getRepaymentDetails($repaymentId)
 
 
     
-    public function destroy(Payment $payment)
+    public function destroy($id)
 {
+    $payment = Payment::find($id);
+
+    if (!$payment) {
+        return redirect()->route('admin.payments.index')->with('error', 'Payment not found.');
+    }
+
     $payment->delete();
+
     return redirect()->route('admin.payments.index')->with('success', 'Payment deleted successfully.');
 }
+
 
 }

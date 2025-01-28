@@ -58,13 +58,15 @@
                                 </a>
 
                             
-                                <button type="button" 
-        class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center" 
-        data-bs-toggle="modal" 
-        data-bs-target="#deleteModal" 
-        data-id="{{ $loanType->id }}">
+                                <button 
+    type="button" 
+    class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center" 
+    data-bs-toggle="modal" 
+    data-bs-target="#deleteModal" 
+    data-id="{{ $loanType->id }}">
     <iconify-icon icon="mingcute:delete-2-line"></iconify-icon>
 </button>
+
                             </td>
                         </tr>
                     @endforeach
@@ -75,39 +77,40 @@
 
 
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete this loan type?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form id="deleteForm" method="POST" style="display:inline-block;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this loan type?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="POST" style="display:inline-block;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    
 
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () { 
     const deleteModal = document.getElementById('deleteModal');
 
     deleteModal.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget; 
         const loanTypeId = button.getAttribute('data-id'); 
 
-       
+      
         const deleteForm = document.getElementById('deleteForm');
-        deleteForm.action = `/laravel_loan/admin/loan-types/${loanTypeId}`;
+        deleteForm.action = `/admin/loan-types/${loanTypeId}`;
     });
 });
 

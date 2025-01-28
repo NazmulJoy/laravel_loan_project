@@ -108,12 +108,13 @@ let table = new DataTable("#dataTable");
         </td>
         <td style="text-align: center;">
             <!-- Delete Button for Repayments -->
-<button type="button" 
-        class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center" 
-        onclick="confirmDelete(this)" 
-        data-id="{{ $repayment->id }}">
-    <iconify-icon icon="mingcute:delete-2-line"></iconify-icon>
-</button>
+            <button type="button" 
+            class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center" 
+            onclick="confirmDelete(this)" 
+            data-id="{{ $repayment->id }}">
+        <iconify-icon icon="mingcute:delete-2-line"></iconify-icon>
+    </button>
+    
 
         </td>
     </tr>
@@ -171,27 +172,29 @@ function filterLoanId() {
     }, 300); 
 }
 
-  function confirmDelete(button) {
-    const repaymentId = button.getAttribute('data-id');
-    const deleteUrl = `/laravel_loan/admin/repayments/${repaymentId}`; 
+function confirmDelete(button) {
+    const repaymentId = button.getAttribute('data-id'); 
+    const deleteUrl = `/admin/repayments/${repaymentId}`; 
+
+    const csrfToken = '{{ csrf_token() }}'; 
 
     Swal.fire({
-        text: "Are you sure you want to delete this?", 
-        icon: null, 
+        text: "Are you sure you want to delete this?",
+        icon: 'warning', 
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
         confirmButtonText: 'Delete',
         cancelButtonText: 'Cancel',
-        position: 'top', 
+        position: 'top',
         width: '400px',
-        padding: '0.5rem', 
+        padding: '0.5rem',
         customClass: {
-            popup: 'compact-popup', 
+            popup: 'compact-popup',
         },
     }).then((result) => {
         if (result.isConfirmed) {
-            
+           
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = deleteUrl;
@@ -200,22 +203,24 @@ function filterLoanId() {
             const csrfInput = document.createElement('input');
             csrfInput.type = 'hidden';
             csrfInput.name = '_token';
-            csrfInput.value = '{{ csrf_token() }}';
+            csrfInput.value = csrfToken; 
 
+           
             const methodInput = document.createElement('input');
             methodInput.type = 'hidden';
             methodInput.name = '_method';
             methodInput.value = 'DELETE';
 
-     
+           
             form.appendChild(csrfInput);
             form.appendChild(methodInput);
 
-           
+            
             document.body.appendChild(form);
             form.submit();
         }
     });
 }
+
 
 </script>

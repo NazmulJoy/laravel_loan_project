@@ -12,38 +12,28 @@ class RepaymentController extends Controller
     
     public function index(Request $request)
 {
-
     $loanId = $request->input('loan_id');
     $status = $request->input('status');
-
 
     $repayments = Repayment::with('loan')
         ->when($loanId, fn($query) => $query->where('loan_id', $loanId))
         ->when($status, fn($query) => $query->where('status', $status))
         ->get();
 
-
     foreach ($repayments as $repayment) {
         $loan = $repayment->loan;
         $totalInterest = ($loan->amount * $loan->interest_rate * $loan->duration) / 100;
         $totalPayableAmount = $loan->amount + $totalInterest;
 
-   
-        $cumulativePaid = Repayment::where('loan_id', $loan->id)
-            ->where('status', 'paid')
-            ->sum('amount');
-        $remainingAmount = $totalPayableAmount - $cumulativePaid;
-
-
-        $repayment->paid_amount = $cumulativePaid;
-        $repayment->remaining_amount = $remainingAmount;
-
+        
+        $paidAmount = $repayment->paid_amount; 
+        $remainingAmount = $repayment->remaining_amount;  
 
         if ($repayment->status === 'pending' && now()->greaterThan($repayment->due_date)) {
             $repayment->status = 'overdue';
-            $repayment->save();
+            $repayment->save();  
 
-         
+            
             $penalty = $repayment->amount * 0.01;
             Repayment::create([
                 'loan_id' => $loan->id,

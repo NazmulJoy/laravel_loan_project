@@ -5,7 +5,8 @@ $title = 'dashboard';
 $subTitle = 'Payment Details';
 $script = '<script>
 let table = new DataTable("#dataTable");
-</script>';
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 @endphp
 
 @section('content')
@@ -112,9 +113,14 @@ let table = new DataTable("#dataTable");
                             <iconify-icon icon="lucide:edit"></iconify-icon>
                         </a>
                         <!-- Delete Button -->
-                        <button type="button" class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $payment->id }}">
-                            <iconify-icon icon="mingcute:delete-2-line"></iconify-icon>
-                        </button>
+                        <button type="button" 
+        class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center" 
+        onclick="confirmDelete(this)" 
+        data-id="{{ $payment->id }}">
+    <iconify-icon icon="mingcute:delete-2-line"></iconify-icon>
+</button>
+
+
                     </td>
                 </tr>
                 @endforeach
@@ -148,28 +154,7 @@ let table = new DataTable("#dataTable");
     </div>
 </div>
 
-<!-- Delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form id="deleteForm" method="POST">
-            @csrf
-            @method('DELETE')
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Delete Payment</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete this payment?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+
 @endsection
 
 <script>
@@ -191,14 +176,14 @@ function filterRepaymentId() {
         let url = `?repayment_id=${repaymentId}`;
         if (status) url += `&status=${status}`;
         window.location.href = url;
-    }, 300); // 300 milliseconds delay
+    }, 300); 
 }
 
     document.addEventListener('DOMContentLoaded', () => {
-    // Attach event listener to all buttons opening the Payment Details modal
+   
     document.querySelectorAll('[data-bs-target="#viewModal"]').forEach(button => {
         button.addEventListener('click', function () {
-            // Retrieve data attributes from the button
+           
             const paymentUser = this.getAttribute('data-payment-user');
             const installmentNumber = this.getAttribute('data-installment-number');
             const repaymentAmount = this.getAttribute('data-repayment-amount');
@@ -209,7 +194,7 @@ function filterRepaymentId() {
             const loanDuration = this.getAttribute('data-loan-duration');
             const paymentStatus = this.getAttribute('data-payment-status');
 
-            // Populate the modal with these values
+          
             document.getElementById('paymentUser').textContent = paymentUser;
             document.getElementById('installmentNumber').textContent = installmentNumber;
             document.getElementById('repaymentAmount').textContent = `${repaymentAmount} BDT`;
@@ -222,6 +207,59 @@ function filterRepaymentId() {
         });
     });
 });
+
+function confirmDelete(button) {
+    const paymentId = button.getAttribute('data-id');  
+    const deleteUrl = `/admin/payments/${paymentId}`;  
+
+    const csrfToken = '{{ csrf_token() }}';  
+
+
+    Swal.fire({
+        text: "Are you sure you want to delete this payment?",
+        icon: 'warning', 
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        position: 'top',
+        width: '400px',
+        padding: '0.5rem',
+        customClass: {
+            popup: 'compact-popup',
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+           
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = deleteUrl;  
+
+      
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = csrfToken;
+
+          
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+
+           
+            form.appendChild(csrfInput);
+            form.appendChild(methodInput);
+
+          
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+
+
 
 
 
