@@ -67,28 +67,30 @@
         @endif
 
         <!-- Active Loan Details -->
-        @if ($activeLoan)
-            <div class="card shadow-lg section-title bg-light mb-5">
-                <div class="card-body">
-                    <h2 class="wow fadeInUp">Active Loan Overview</h2>
-                    <p><strong>Loan Type:</strong> {{ $activeLoan->loanType->name }}</p>
-                    <p><strong>Amount:</strong> BDT {{ number_format($activeLoan->amount) }}</p>
-                    <p><strong>Total Payable Amount:</strong> BDT {{ number_format($activeLoanDetails['totalPayable']) }}
-                    </p>
-                    <p><strong>Paid Amount:</strong> BDT {{ number_format($activeLoanDetails['paidAmount']) }}</p>
-                    <p><strong>Remaining Amount:</strong> BDT {{ number_format($activeLoanDetails['remainingAmount']) }}</p>
-                    <p><strong>Remaining Installments:</strong> {{ $activeLoanDetails['remainingInstallments'] }}</p>
-                    <p>
-                        <strong>Overdue Installments:</strong>
-                        @if (count($activeLoanDetails['overdueInstallments']))
-                            {{ implode(', ', $activeLoanDetails['overdueInstallments']) }}
-                        @else
-                            None
-                        @endif
-                    </p>
-                </div>
+        @if ($loans->isNotEmpty())
+    @foreach ($loans as $activeLoan)
+        <div class="card shadow-lg section-title bg-light mb-5">
+            <div class="card-body">
+                <h2 class="wow fadeInUp">Active Loan Overview</h2>
+                <p><strong>Loan Type:</strong> {{ $activeLoan->loanType->name }}</p>
+                <p><strong>Amount:</strong> BDT {{ number_format($activeLoan->amount) }}</p>
+                <p><strong>Total Payable Amount:</strong> BDT {{ number_format($activeLoanDetails[$activeLoan->id]['totalPayable']) }}</p>
+                <p><strong>Paid Amount:</strong> BDT {{ number_format($activeLoanDetails[$activeLoan->id]['paidAmount']) }}</p>
+                <p><strong>Remaining Amount:</strong> BDT {{ number_format($activeLoanDetails[$activeLoan->id]['remainingAmount']) }}</p>
+                <p><strong>Remaining Installments:</strong> {{ $activeLoanDetails[$activeLoan->id]['remainingInstallments'] }}</p>
+                <p>
+                    <strong>Overdue Installments:</strong>
+                    @if (!empty($activeLoanDetails[$activeLoan->id]['overdueInstallments']))
+                        {{ implode(', ', $activeLoanDetails[$activeLoan->id]['overdueInstallments']) }}
+                    @else
+                        None
+                    @endif
+                </p>
             </div>
-        @endif
+        </div>
+    @endforeach
+@endif
+
 
         <!-- Loan Tabs -->
         <ul class="nav nav-tabs" id="loanTabs" role="tablist">

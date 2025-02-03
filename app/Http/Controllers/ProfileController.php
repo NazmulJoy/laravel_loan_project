@@ -21,43 +21,43 @@ class ProfileController extends Controller
     }
 
     public function loan()
-    {
-        $user = Auth::user();
-        $loans = $user->loans()
-            ->where('status', 'approved')
-            ->with(['repayments', 'repayments.payments'])
-            ->get();
+{
+    $user = Auth::user();
+    
+    // Get all approved loans with repayment details
+    $loans = $user->loans()
+        ->where('status', 'approved')
+        ->with(['repayments', 'repayments.payments'])
+        ->get();
 
-            $allloans = $user->loans()->get();
-        $activeLoan = $loans->first(); 
-    
-        $activeLoanDetails = null;
-    
-        if ($activeLoan) {
-            $totalPayable = $activeLoan->repayments->sum('amount');
-            $paidAmount = $activeLoan->repayments
-                ->where('status', 'paid')
-                ->sum('amount');
-            $remainingAmount = $totalPayable - $paidAmount;
-            $interestPaid = $paidAmount - $activeLoan->amount;
-            $remainingInstallments = $activeLoan->repayments
-                ->where('status', 'pending')
-                ->count();
-            $overdueInstallments = $activeLoan->repayments
-                ->where('status', 'overdue');
-    
-            $activeLoanDetails = [
-                'totalPayable' => $totalPayable,
-                'paidAmount' => $paidAmount,
-                'remainingAmount' => $remainingAmount,
-                'interestPaid' => $interestPaid,
-                'remainingInstallments' => $remainingInstallments,
-                'overdueInstallments' => $overdueInstallments->pluck('installment_number')->toArray(),
-            ];
-        }
-    
-        return view('frontend.myloan', compact('user', 'loans', 'activeLoanDetails', 'activeLoan','allloans'));
+    // Get all loans (not just approved ones)
+    $allloans = $user->loans()->get();
+
+    $activeLoanDetails = [];
+
+    // Loop through each approved loan and calculate details
+    foreach ($loans as $loan) {
+        $totalPayable = $loan->repayments->sum('amount');
+        $paidAmount = $loan->repayments->where('status', 'paid')->sum('amount');
+        $remainingAmount = $totalPayable - $paidAmount;
+        $interestPaid = $paidAmount - $loan->amount;
+        $remainingInstallments = $loan->repayments->where('status', 'pending')->count();
+        $overdueInstallments = $loan->repayments->where('status', 'overdue')->pluck('installment_number')->toArray();
+
+        // Store details for each loan using its ID
+        $activeLoanDetails[$loan->id] = [
+            'totalPayable' => $totalPayable,
+            'paidAmount' => $paidAmount,
+            'remainingAmount' => $remainingAmount,
+            'interestPaid' => $interestPaid,
+            'remainingInstallments' => $remainingInstallments,
+            'overdueInstallments' => $overdueInstallments,
+        ];
     }
+
+    return view('frontend.myloan', compact('user', 'loans', 'activeLoanDetails', 'allloans'));
+}
+
     public function makePayment(Request $request)
 {
    
